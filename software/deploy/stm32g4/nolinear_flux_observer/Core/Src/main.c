@@ -23,7 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "string.h"
-#include "algorithm.h"
+#include "Algorithm.h"
 #include "arm_math.h"
 
 /* USER CODE END Includes */
@@ -155,7 +155,13 @@ int main(void)
   HAL_DAC_Start(&hdac3, DAC_CHANNEL_1);
   HAL_DAC_SetValue(&hdac3, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 3000); // dac输出，因为adc的精度为12bit，所以满量程为4096，这里只是测试
   HAL_COMP_Start(&hcomp1);
-	rtU.speed_ref = 1200;
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
+	Algorithm_initialize();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -169,10 +175,9 @@ int main(void)
     HAL_ADC_Start(&hadc2);
 		vpoten = HAL_ADC_GetValue(&hadc1);                                   // adc1 channel-11 滑动变阻器
     vbus = HAL_ADC_GetValue(&hadc2) * (3.3f / 4096.0f) * (78.0f / 3.0f); // adc2 channel-1 母线电压
-		rtU.udc = vbus;
 		final_speed = (0.488f*vpoten-1000);
 		
-		rtU.speed_ref = final_speed;
+		rtU.Ref_RPM = final_speed;
     HAL_Delay(1);
   }
   /* USER CODE END 3 */
@@ -810,7 +815,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
     break;
   case Button2_Pin:
-		rtU.on_off=1;
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
@@ -819,7 +823,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
     break;
   case Button3_Pin:
-		rtU.on_off=0;
 		TIM1->CCR1 = 0;
 		TIM1->CCR2 = 0;
 		TIM1->CCR3 = 0;
@@ -896,21 +899,23 @@ static int cnt = 0;
       adc1_in12_c = hadc1.Instance->JDR2;
       ic = (adc1_in12_c - ic_offset) * 0.0193359375f;
 			
-			rtU.ia = ia;
-			rtU.ib = ib;
-			rtU.ic = ic;
-			algorithm_step();
-			
-			TIM1->CCR1 = rtY.tabc[0];
-			TIM1->CCR2 = rtY.tabc[1];
-			TIM1->CCR3 = rtY.tabc[2];
-			
-			temp[0] = rtU.ia;
-			temp[1] = rtU.ib;
-			temp[2] = rtU.ic;
-			temp[3] = smo_we;
-			temp[4] = rtU.speed_ref;
+			rtU.Udc = vbus;
+			rtU.Ref_Id=0.0f;
+			rtU.Ref_Iq = 5.5f;
+			rtU.Iabc[0] = ia;
+			rtU.Iabc[1] = ib;
+			rtU.Iabc[2] = ic;
+			Algorithm_step();
 
+			TIM1->CCR1 = rtY.Tabc[0];
+			TIM1->CCR2 = rtY.Tabc[1];
+			TIM1->CCR3 = rtY.Tabc[2];
+
+			temp[0] = rtU.Iabc[0];
+			temp[1] = rtU.Iabc[1];
+			temp[2] = rtU.Iabc[2];
+			temp[3] = rtU.Ref_RPM;
+			temp[4] = 0;
       memcpy(tx_buffer, (uint8_t *)&temp, sizeof(temp));
       HAL_UART_Transmit_DMA(&huart3, (uint8_t *)tx_buffer, sizeof(tx_buffer));
     }

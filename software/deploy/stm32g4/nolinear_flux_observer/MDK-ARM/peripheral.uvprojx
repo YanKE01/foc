@@ -1142,9 +1142,9 @@
           <GroupName>Matlab</GroupName>
           <Files>
             <File>
-              <FileName>algorithm.c</FileName>
+              <FileName>Algorithm.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\MATLAB\algorithm.c</FilePath>
+              <FilePath>..\MATLAB\Algorithm.c</FilePath>
             </File>
           </Files>
         </Group>
