@@ -1,0 +1,10 @@
+current_loop_ert_rtw/html/*
+current_loop_ert_rtw/tmwinternal/*
+slprj/*
+*.rsp
+*.mat
+*.bat
+*.mk
+*.tmw
+*.slxc
+*.slx.r2023a
