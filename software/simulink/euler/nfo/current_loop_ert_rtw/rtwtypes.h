@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'current_loop'.
  *
- * Model version                  : 5.0
+ * Model version                  : 5.1
  * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
- * C/C++ source code generated on : Tue Jan 16 21:56:50 2024
+ * C/C++ source code generated on : Wed Jan 17 10:16:04 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M

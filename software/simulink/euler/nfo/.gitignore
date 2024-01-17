@@ -8,3 +8,5 @@ slprj/*
 *.tmw
 *.slxc
 *.slx.r2023a
+*.autosave
+*.dmr

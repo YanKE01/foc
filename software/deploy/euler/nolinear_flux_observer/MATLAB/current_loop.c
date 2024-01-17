@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'current_loop'.
  *
- * Model version                  : 5.0
+ * Model version                  : 5.1
  * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
- * C/C++ source code generated on : Tue Jan 16 21:56:50 2024
+ * C/C++ source code generated on : Wed Jan 17 10:16:04 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -18,6 +18,7 @@
 #include "current_loop.h"
 #include "rtwtypes.h"
 #include <math.h>
+#include "mw_cmsis.h"
 #include <stddef.h>
 #include <float.h>
 
@@ -913,10 +914,10 @@ void current_loop_step(void)
   /* End of SwitchCase: '<S3>/Switch Case' */
 
   /* Trigonometry: '<S3>/Cos' */
-  rtb_Cos = cosf(rtDW.Merge);
+  rtb_Cos = arm_cos_f32(rtDW.Merge);
 
   /* Trigonometry: '<S3>/Sin' */
-  rtb_Saturation_k = sinf(rtDW.Merge);
+  rtb_Saturation_k = arm_sin_f32(rtDW.Merge);
 
   /* Sum: '<S16>/Sum' incorporates:
    *  Constant: '<S16>/id_ref'
@@ -924,7 +925,7 @@ void current_loop_step(void)
    *  Product: '<S12>/Product1'
    *  Sum: '<S12>/Add'
    */
-  rtb_Sum = 0.0f - (rtb_Add1_j * rtb_Cos + rtb_Gain2_c * rtb_Saturation_k);
+  rtb_Sum = 0.0 - (rtb_Add1_j * rtb_Cos + rtb_Gain2_c * rtb_Saturation_k);
 
   /* Sum: '<S122>/Sum' incorporates:
    *  DiscreteIntegrator: '<S113>/Integrator'
