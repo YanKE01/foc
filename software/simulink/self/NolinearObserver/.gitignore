@@ -1,0 +1,10 @@
+slprj/*
+Algorithm_ert_rtw/tmwinternal
+*.rsp
+*.dmr
+*.mat
+*.tmw
+*.bat
+*.mk
+*.autosave
+*.slxc
